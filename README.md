@@ -21,3 +21,6 @@ and
 ```bash
 cd final/client && npm i && npm start
 ```
+
+add package-json
+
