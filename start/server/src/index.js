@@ -3,7 +3,6 @@ const typeDefs = require('./schema');
 const { createStore } = require('./utils');
 const resolvers = require('./resolvers');
 const isEmail = require('isemail');
-const playground = require('graphql-playground-middleware-express');
 
 const LaunchAPI = require('./datasources/launch');
 const UserAPI = require('./datasources/user');
@@ -13,7 +12,7 @@ const store = createStore();
 const server = new ApolloServer({
     typeDefs,
     resolvers,
-    playground: true,
+    playground: false,
     context: async ({ req }) => {
         // simple auth check on every request
         const auth = req.headers && req.headers.authorization || '';
