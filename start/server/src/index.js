@@ -3,6 +3,7 @@ const typeDefs = require('./schema');
 const { createStore } = require('./utils');
 const resolvers = require('./resolvers');
 const isEmail = require('isemail');
+const playground = require('graphql-playground-middleware-express');
 
 const LaunchAPI = require('./datasources/launch');
 const UserAPI = require('./datasources/user');
