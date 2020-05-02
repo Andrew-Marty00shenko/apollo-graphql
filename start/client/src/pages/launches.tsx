@@ -5,6 +5,20 @@ import gql from 'graphql-tag';
 import { LaunchTile, Header, Button, Loading } from '../components';
 import { RouteComponentProps } from '@reach/router';
 import * as GetLaunchListTypes from './__generated__/GetLaunchList';
+import { LAUNCH_TILE_DATA } from './launchTileData';
+
+export const GET_LAUNCH_DETAILS = gql`
+  query LaunchDetails($launchId: ID!) {
+    launch(id: $launchId) {
+      site
+      rocket {
+        type
+      }
+      ...LaunchTile
+    }
+  }
+  ${LAUNCH_TILE_DATA}
+`;
 
 const GET_LAUNCHES = gql`
   query launchList($after: String) {
@@ -12,20 +26,13 @@ const GET_LAUNCHES = gql`
       cursor
       hasMore
       launches {
-        id
-        isBooked
-        rocket {
-          id
-          name
-        }
-        mission {
-          name
-          missionPatch
-        }
+        ...LaunchTile
       }
     }
   }
+  ${LAUNCH_TILE_DATA}
 `;
+
 interface LaunchesProps extends RouteComponentProps { }
 
 const Launches: React.FC<LaunchesProps> = () => {
