@@ -5,12 +5,10 @@ import gql from 'graphql-tag';
 import { LaunchTile, Header, Button, Loading } from '../components';
 import { RouteComponentProps } from '@reach/router';
 import * as GetLaunchListTypes from './__generated__/GetLaunchList';
-import { LAUNCH_TILE_DATA } from './launchTileData';
-
+import { LAUNCH_TILE_DATA } from './LaunchTileData'
 export const GET_LAUNCH_DETAILS = gql`
   query LaunchDetails($launchId: ID!) {
     launch(id: $launchId) {
-      isInCart @client
       site
       rocket {
         type
@@ -33,6 +31,8 @@ const GET_LAUNCHES = gql`
   }
   ${LAUNCH_TILE_DATA}
 `;
+
+
 
 interface LaunchesProps extends RouteComponentProps { }
 
@@ -63,12 +63,10 @@ const Launches: React.FC<LaunchesProps> = () => {
         data.launches.hasMore && (
           <Button
             onClick={() =>
-
               fetchMore({
                 variables: {
                   after: data.launches.cursor,
                 },
-
                 updateQuery: (prev, { fetchMoreResult, ...rest }) => {
                   if (!fetchMoreResult) return prev;
                   return {

@@ -3,12 +3,9 @@ import { useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
 
 import { Loading, Header, LaunchTile } from '../components';
-import { LAUNCH_TILE_DATA } from './launchTileData';
+import { LAUNCH_TILE_DATA } from './LaunchTileData';
 import { RouteComponentProps } from '@reach/router';
 import * as GetMyTripsTypes from './__generated__/GetMyTrips';
-
-interface ProfileProps extends RouteComponentProps { }
-
 
 export const GET_MY_TRIPS = gql`
   query GetMyTrips {
@@ -22,6 +19,8 @@ export const GET_MY_TRIPS = gql`
   }
   ${LAUNCH_TILE_DATA}
 `;
+
+interface ProfileProps extends RouteComponentProps {}
 
 const Profile: React.FC<ProfileProps> = () => {
   const { data, loading, error } = useQuery<GetMyTripsTypes.GetMyTrips, any>(
@@ -45,4 +44,5 @@ const Profile: React.FC<ProfileProps> = () => {
     </Fragment>
   );
 }
+
 export default Profile;

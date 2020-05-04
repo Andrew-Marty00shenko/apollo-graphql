@@ -1,6 +1,6 @@
 import gql from 'graphql-tag';
 
-export const LAUNCH_TILE_DATA = gql`
+export let LAUNCH_TILE_DATA = gql`
   fragment LaunchTile on Launch {
     id
     isBooked

@@ -1,5 +1,4 @@
 import React from 'react';
-
 import styled from 'react-emotion';
 import { useApolloClient } from '@apollo/react-hooks';
 
@@ -11,6 +10,7 @@ export default function LogoutButton() {
   return (
     <StyledButton
       onClick={() => {
+
         client.writeData({ data: { isLoggedIn: false } });
         localStorage.clear();
       }}
