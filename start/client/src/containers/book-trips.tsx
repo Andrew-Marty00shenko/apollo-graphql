@@ -2,10 +2,16 @@ import React from "react"; // preserve-line
 import { useMutation } from "@apollo/react-hooks"; // preserve-line
 import gql from "graphql-tag";
 
+import { Elements } from '@stripe/react-stripe-js';
+import { loadStripe } from '@stripe/stripe-js';
+import CheckoutForm from '../components/CheckoutForm';
+
 import Button from "../components/button"; // preserve-line
 import { GET_LAUNCH } from "./cart-item"; // preserve-line
 import * as GetCartItemsTypes from "../pages/__generated__/GetCartItems";
 import * as BookTripsTypes from "./__generated__/BookTrips";
+
+const stripePromise = loadStripe("pk_test_MsegGeyFrDdajv4HIBfpYD9F00CP710nXC");
 
 export const BOOK_TRIPS = gql`
   mutation BookTrips($launchIds: [ID]!) {
@@ -41,9 +47,12 @@ const BookTrips: React.FC<BookTripsProps> = ({ cartItems }) => {
   return data && data.bookTrips && !data.bookTrips.success ? (
     <p data-testid="message">{data.bookTrips.message}</p>
   ) : (
-      <Button onClick={() => bookTrips()} data-testid="book-button">
-        Book All
+      <Elements stripe={stripePromise}>
+        <CheckoutForm />
+        <Button onClick={() => bookTrips()} data-testid="book-button">
+          Book All
       </Button>
+      </Elements>
     );
 };
 
