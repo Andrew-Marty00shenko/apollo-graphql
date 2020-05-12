@@ -1,10 +1,9 @@
-import React from 'react';
-import { useMutation } from '@apollo/react-hooks';
-import gql from 'graphql-tag';
+import React from "react";
+import { useMutation } from "@apollo/react-hooks";
+import gql from "graphql-tag";
 
-import { GET_LAUNCH_DETAILS } from '../pages/launch';
-import Button from '../components/button';
-import * as LaunchDetailTypes from '../pages/__generated__/LaunchDetails';
+import { GET_LAUNCH_DETAILS } from "../pages/launch";
+import Button from "../components/button";
 
 export const TOGGLE_CART = gql`
   mutation addOrRemoveFromCart($launchId: ID!) {
@@ -25,9 +24,7 @@ export const CANCEL_TRIP = gql`
   }
 `;
 
-interface ActionButtonProps extends Partial<LaunchDetailTypes.LaunchDetails_launch> { }
-
-const ActionButton: React.FC<ActionButtonProps> = ({ isBooked, id, isInCart }) => {
+const ActionButton = ({ isBooked, id, isInCart }) => {
   const [mutate, { loading, error }] = useMutation(
     isBooked ? CANCEL_TRIP : TOGGLE_CART,
     {
@@ -37,7 +34,7 @@ const ActionButton: React.FC<ActionButtonProps> = ({ isBooked, id, isInCart }) =
           query: GET_LAUNCH_DETAILS,
           variables: { launchId: id },
         },
-      ]
+      ],
     }
   );
 
@@ -46,18 +43,15 @@ const ActionButton: React.FC<ActionButtonProps> = ({ isBooked, id, isInCart }) =
 
   return (
     <div>
-      <Button
-        onClick={() => mutate()}
-        data-testid={'action-button'}
-      >
+      <Button onClick={() => mutate()} data-testid={"action-button"}>
         {isBooked
-          ? 'Cancel This Trip'
+          ? "Cancel This Trip"
           : isInCart
-            ? 'Remove from Cart'
-            : 'Add to Cart'}
+            ? "Remove from Cart"
+            : "Add to Cart"}
       </Button>
     </div>
   );
-}
+};
 
 export default ActionButton;
