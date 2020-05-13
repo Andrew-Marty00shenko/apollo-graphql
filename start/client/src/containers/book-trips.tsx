@@ -29,6 +29,7 @@ export const BOOK_TRIPS = gql`
 interface BookTripsProps extends GetCartItemsTypes.GetCartItems { }
 
 const BookTrips: React.FC<BookTripsProps> = ({ cartItems }) => {
+
   const [bookTrips, { data }] = useMutation<
     BookTripsTypes.BookTrips,
     BookTripsTypes.BookTripsVariables
