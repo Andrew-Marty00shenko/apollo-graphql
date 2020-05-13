@@ -1,21 +1,19 @@
-import React from "react"; // preserve-line
+import React, { useState } from "react"; // preserve-line
 import { useMutation } from "@apollo/react-hooks"; // preserve-line
 import gql from "graphql-tag";
-
-import { Elements } from '@stripe/react-stripe-js';
-import { loadStripe } from '@stripe/stripe-js';
-import CheckoutForm from '../components/CheckoutForm';
 
 import Button from "../components/button"; // preserve-line
 import { GET_LAUNCH } from "./cart-item"; // preserve-line
 import * as GetCartItemsTypes from "../pages/__generated__/GetCartItems";
 import * as BookTripsTypes from "./__generated__/BookTrips";
+import { useStripe, useElements, CardElement } from "@stripe/react-stripe-js";
+import { StripeCardElement } from "@stripe/stripe-js";
 
-const stripePromise = loadStripe("pk_test_MsegGeyFrDdajv4HIBfpYD9F00CP710nXC");
+
 
 export const BOOK_TRIPS = gql`
-  mutation BookTrips($launchIds: [ID]!) {
-    bookTrips(launchIds: $launchIds) {
+  mutation BookTrips($launchIds: [ID]!, $cardToken: String) {
+    bookTrips(launchIds: $launchIds, cardToken: $cardToken) {
       success
       message
       launches {
@@ -29,6 +27,7 @@ export const BOOK_TRIPS = gql`
 interface BookTripsProps extends GetCartItemsTypes.GetCartItems { }
 
 const BookTrips: React.FC<BookTripsProps> = ({ cartItems }) => {
+  const [load, setLoad] = useState(false);
 
   const [bookTrips, { data }] = useMutation<
     BookTripsTypes.BookTrips,
@@ -45,15 +44,49 @@ const BookTrips: React.FC<BookTripsProps> = ({ cartItems }) => {
     },
   });
 
+  const stripe = useStripe();
+  const elements = useElements();
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+
+
+
+    event.preventDefault();
+
+    if (stripe && elements) {
+      try {
+        const result = await stripe.createPaymentMethod({
+          type: 'card',
+          card: elements.getElement(CardElement) as StripeCardElement,
+          billing_details: {
+            name: 'Jenny Rosen'
+          },
+        });
+
+        await bookTrips({
+          variables: {
+            launchIds: cartItems,
+            cardToken: result && result.paymentMethod && result.paymentMethod.id
+          } as any
+        });
+      }
+      catch (e) {
+        alert(e.message)
+        setLoad(false)
+      }
+    }
+  }
+
   return data && data.bookTrips && !data.bookTrips.success ? (
     <p data-testid="message">{data.bookTrips.message}</p>
   ) : (
-      <Elements stripe={stripePromise}>
-        <CheckoutForm />
-        <Button onClick={() => bookTrips()} data-testid="book-button">
-          Book All
-      </Button>
-      </Elements>
+
+      <form onSubmit={handleSubmit}>
+        <CardElement />
+        <Button disabled={load} type="submit" data-testid="book-button">
+          {load ? 'loading...' : 'Book all'}
+        </Button>
+      </form>
     );
 };
 

@@ -63,7 +63,7 @@ module.exports = {
         bookTrips: async (_, { launchIds, cardToken }, { dataSources }) => {
             let paymentStatus;
             if (cardToken) {
-                const stripe = require('stripe')('pk_test_MsegGeyFrDdajv4HIBfpYD9F00CP710nXC');
+                const stripe = require('stripe')('sk_test_IbgP02XomKEYsBQkxI0XY6rp00qHwJUfOI');
                 try {
                     const intent = await stripe.paymentIntents.create({
                         amount: 1000,
